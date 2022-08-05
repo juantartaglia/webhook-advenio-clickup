@@ -1,0 +1,27 @@
+{
+    "version": 2,
+    "env": {
+        "MAILER_SMTP_USER": "@mailer_smtp_user",
+        "MAILER_SMTP_PASSWORD": "@mailer_smtp_password",
+        "TOKEN": "@token-production",
+        "TEAM_ID":"@team-id-production-vsjl",
+        "WEBHOOK_ENDPOINT":"@webhook_endpoint",
+        "SPACE_ID":"@space-id-production-is9p",
+        "WEBHOOK_ID":"@webhook-id-production-28zi",
+        "CLIENT_ID":"@client-id-production-2slr",
+        "CLIENT_SECRET":"@client-secret-production-1zyb",
+        "CODE":"@code"
+    },
+    "builds": [
+        {
+          "src": "api/serverless.js",
+          "use": "@now/node",
+          "config": {
+            "helpers": false
+          }
+        }
+      ],
+      "routes": [
+        { "src": "/.*", "dest": "/api/serverless.js"}
+      ]
+  }

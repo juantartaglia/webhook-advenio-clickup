@@ -1,0 +1,23 @@
+{
+  "name": "webhook-advenio-clickup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./api/index.js",
+  "engines": {
+    "node": "10.x"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^3.4.1",
+    "fastify-cors": "^4.1.0",
+    "fastify-multipart": "^3.2.0",
+    "mailgen": "^2.0.14",
+    "nodemailer": "^6.4.11",
+    "request": "^2.88.2"
+  }
+}
