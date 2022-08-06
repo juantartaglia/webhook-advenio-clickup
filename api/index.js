@@ -71,8 +71,13 @@ function build () {
     }
   })
 
-  app.post('/webhook', async (request, reply) => {
-    await webhookHandler(request.body) 
+  app.post('/webhook/taskCreated', async (request, reply) => {
+    await webhookHandler(request.body, "TaskCreated") 
+    return 'OK'
+  })
+
+  app.post('/webhook/taskStatusChanged', async (request, reply) => {
+    await webhookHandler(request.body, "TaskStatusChanged") 
     return 'OK'
   })
 
@@ -271,28 +276,25 @@ app.get('/status',async  (request, reply) => {
 
 module.exports = build
 
-async function webhookHandler(webhook){
- console.log("****************   webhook  ************************")
- console.log(webhook);
- let { event, task_id } = webhook;
- if(event === 'taskCommentPosted' || event === 'taskStatusUpdated') {
-   console.log("Enviar mail", event, task_id);
-   try {
-      let {id, name, custom_fields } = await getTask(task_id);
-      let email = custom_fields.filter(e => e.name === 'Email');
-      let username = custom_fields.filter(e => e.name === 'User Name');
-      let business = custom_fields.filter(e => e.name === 'Customer');
-      if (email[0] && email[0].value != '') {
-        let mail = await generateEmail(name, id, username[0].value );
-        let copyAddress = await getCopyAddress(business[0].value);
-        let sendMail =await sendEmail({ from: process.env.MAILER_SMTP_USER, to: email[0].value,cc: copyAddress , subject:"Notificación", html: mail })
-      }
-   } catch(e){
-     console.log("Error on GetTask Webhook", e)
-   }
- }
+async function webhookHandler(webhook, event){
+  console.log("****************   webhook  ************************")
+  console.log(webhook);
+  let { payload } = webhook;
+  try {
+    let {id, name, custom_fields } = payload;
+    console.log("Enviar mail ",event ,task_id);
+    let email = custom_fields.filter(e => e.name === 'Email');
+    let username = custom_fields.filter(e => e.name === 'User Name');
+    let business = custom_fields.filter(e => e.name === 'Customer');
+    if (email[0] && email[0].value != '') {
+      let mail = await generateEmail(name, id, username[0].value );
+      let copyAddress = await getCopyAddress(business[0].value);
+      let sendMail =await sendEmail({ from: process.env.MAILER_SMTP_USER, to: email[0].value,cc: copyAddress , subject:"Notificación", html: mail })
+    }
+  } catch(e){
+    console.log("Error on GetTask Webhook", e)
+  }
 }
-
 
 async function getCopyAddress(business){
   const config = require('./profiles.json')
